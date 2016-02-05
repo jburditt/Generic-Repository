@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1184D46D-C4AC-498B-9867-D65E1A010F71}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>ClassLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>Repository</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Helpers\BaseApiController.cs" />
+    <Compile Include="Helpers\BaseController.cs" />
+    <Compile Include="Models\Data\EFRepository.cs" />
+    <Compile Include="Models\Data\IRepository.cs" />
+    <Compile Include="Models\Data\WBS.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WBS.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Data\WBS.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WBS.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DTO\DtoMapper.core.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\DTO\DtoMapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\DTO\DtoMapper.manual.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\DTO\DtoMapper1.cs">
+      <DependentUpon>DtoMapper.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Models\Interfaces\ICreatedOn.cs" />
+    <Compile Include="Models\Interfaces\IDTO.cs" />
+    <Compile Include="Models\Interfaces\IIdentifier.cs" />
+    <Compile Include="Models\Interfaces\IModifiedOn.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Models\Data\WBS.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>WBS.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Models\Data\WBS.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>WBS.cs</LastGenOutput>
+    </None>
+    <None Include="Models\DTO\DtoMapper.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DtoMapper1.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>

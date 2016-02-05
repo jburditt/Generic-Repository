@@ -1,0 +1,316 @@
+<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ Output Extension=".cs"  #>
+<#@ Assembly Name="System.Core.dll" #>
+<#@ Assembly Name="$(ProjectDir)bin\WBS.dll" #>
+<#@ Import Namespace="System.Collections.Generic" #>
+<#@ Import Namespace="System.Reflection" #>
+<#@ Import Namespace="System.IO" #>
+<#@ Import Namespace="System.Linq" #>
+<#@ Import Namespace="System.Linq.Expressions" #>
+<#@ import namespace="WBS.Models" #>
+<#
+var entitiesNamespace = "WBS.Models.Data";
+var entitiesAssembly = @"..\..\bin\WBS.dll";
+// add objects you do not want DTO created for
+var excludeList = new string[] { 
+	//"address.companies", "address.users",
+	//"auditor_case_type"
+	//"company.users", "company.cases", "company.incidents", "company.cases"
+};
+// if enabled all plural dtos will be excluded e.g. address.companies
+var disableCollectionDTO = true;
+
+Func<PropertyInfo, bool> scalarProperties = p =>
+	p.PropertyType.IsArray ||					// arrays are technically collections but we do not want them in this list e.g. Byte[]
+	p.PropertyType == typeof(string) ||			// check if string (because strings are IEnumerable but not a collection)
+	!p.PropertyType.GetInterfaces().Any(t => t == typeof(System.Collections.IList) || t == typeof(System.Collections.ICollection) || t == typeof(System.Collections.IEnumerable));
+Func<PropertyInfo, bool> collectionProperties = p => !scalarProperties.Invoke(p);
+
+//Use another expression here to filter the entities
+var typesToRegister = from t in LoadProjectAssembly(entitiesAssembly).GetExportedTypes()
+                      where t.Namespace == entitiesNamespace && t.IsClass && !t.IsAbstract && 
+                        !(t.Name == "EFRepository" || t.Name == "WBSEntities")
+					  select t;
+
+GenerateUsings(typesToRegister);#>
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace <#= entitiesNamespace #>.DTO
+{
+<#
+// We filter out non-classes and abstract classes just in case the 
+// user made a mistake in the query, so as not to generate code that 
+// doesn't have a chance to compile.
+foreach (var type in typesToRegister.Where(t => t.IsClass && !t.IsAbstract))
+{
+	// check if object exists in the excluded list
+	if (excludeList.Contains(type.Name))
+		continue;
+    #>
+
+	[Serializable]
+    [DataContract(Name="<#= ConvertToCamelCase(type.Name) #>", Namespace="<#= GetDataContractNamespace(entitiesNamespace)#>")]
+    public partial class <#= GetDTOClassName(type.Name) #><#if(type.BaseType != typeof(object)) { #> : <#=type.BaseType.FullName#><#}
+	#> : IDTO<<#= GetDTOClassName(type.Name) #>, <#= SafeName(type.Name) #>>
+	{
+    <# 
+          foreach (var property in type.GetProperties())
+          {
+		  	// check if property exists in the excluded list
+			if (excludeList.Contains(type.Name + "." + property.Name))
+				continue;
+
+            if (ExportProperty(property) && collectionProperties(property))
+            {
+				if (disableCollectionDTO && IsDTO(typesToRegister, property.PropertyType.GetGenericArguments()[0]))
+					continue;
+            #>
+        
+        [DataMember(Name="<#= ConvertToCamelCase(property.Name) #>")]    
+        public ICollection<<#= GetDTOClassName(property.PropertyType.GetGenericArguments()[0].Name) #>> <#= property.Name #>
+        {   
+            get;
+            internal set;
+        }
+            <#    
+            }
+            else if (ExportProperty(property) && IsDTO(typesToRegister, property.PropertyType)) 
+            {
+            #>
+        
+        [DataMember(Name="<#= ConvertToCamelCase(property.Name) #>")]
+        public <#= GetDTOClassName(property.PropertyType.Name) #> <#= SafeName(property.Name) #>
+        {
+            get; set;
+        }
+        <#}
+            else if(ExportProperty(property))
+            {
+            #>
+        
+        [DataMember(Name="<#= ConvertToCamelCase(property.Name) #>")]
+        public <#= GetPropertyType(property) #> <#= property.Name #>
+        {
+            get; set;
+        }
+        <#}}#>
+                
+        public <#= SafeName(type.Name) #> MapTo(<#= GetDTOClassName(type.Name) #> dto)
+		{
+			return GetMapper().MapTo(dto);
+		}
+
+		public <#= GetDTOClassName(type.Name)#> MapFrom(<#= SafeName(type.Name) #> entity)
+		{
+			return GetMapper().MapTo(entity);
+		}
+		
+        public <#= type.Name #>Mapper GetMapper()
+        {
+            return new <#= type.Name #>Mapper();   
+        }
+        
+        public partial class <#= type.Name #>Mapper
+		{
+			 public <#= GetDTOClassName(type.Name)#> MapTo(<#= SafeName(type.Name) #> entity)
+			 {
+                if (entity == null) return null;
+			    var dto = new <#= GetDTOClassName(type.Name) #>
+                {   
+                    <#
+                    var properties = type.GetProperties().Where(scalarProperties).ToArray();
+                    foreach(var property in properties)
+                    {
+                        if (ExportProperty(property) && IsDTO(typesToRegister, property.PropertyType))
+                        {
+                    #><#= SafeName(property.Name) #> = new <#= GetDTOClassName(property.PropertyType.Name) #>().MapFrom(entity.<#= SafeName(property.Name) #>),
+                    <#  }
+                        else if(ExportProperty(property))
+                        {
+                    #><#= SafeName(property.Name) #> = entity.<#= SafeName(property.Name) #>,
+                    <#  }
+                    }#>         
+                };
+			    <#
+                properties = type.GetProperties().Where(collectionProperties).ToArray();
+                foreach(var property in properties)
+                {
+					if (disableCollectionDTO || excludeList.Contains(type.Name + "." + property.Name))
+						continue;
+                    if(ExportProperty(property)) {
+                    #>dto.<#= property.Name #> = entity.<#= property.Name #>.Select(l =>
+                        new <#= GetDTOClassName(property.PropertyType.GetGenericArguments()[0].Name) #>().GetMapper().MapTo(l)).ToList();
+                <#}}
+                #>DoMapping(dto, entity);
+			    return dto;
+			 }
+			 
+			 public <#= SafeName(type.Name) #> MapTo(<#= GetDTOClassName(type.Name) #> dto)
+			 {
+                if (dto == null) return null;
+			    var entity = new <#= SafeName(type.Name) #>
+                {   
+                    <#
+                    properties = type.GetProperties().Where(scalarProperties).ToArray();
+                    foreach (var property in properties)
+                    {
+                        if (ExportProperty(property) && IsDTO(typesToRegister, property.PropertyType))
+                        {
+                            #><#= SafeName(property.Name) #> = new <#= GetDTOClassName(property.PropertyType.Name) #>().MapTo(dto.<#= SafeName(property.Name) #>),
+                    <#}
+                        else if(ExportProperty(property))
+                        {
+                    #><#= SafeName(property.Name) #> = dto.<#= SafeName(property.Name) #>,
+                    <# }
+                    }#>         
+                };
+			    <#
+                properties = type.GetProperties().Where(collectionProperties).ToArray();
+                foreach(var property in properties)
+                {
+					if (disableCollectionDTO || excludeList.Contains(type.Name + "." + property.Name))
+						continue;
+                    if(ExportProperty(property)) {
+                    #>entity.<#= property.Name #> = dto.<#= property.Name #>.Select(l =>
+                        new <#= GetDTOClassName(property.PropertyType.GetGenericArguments()[0].Name) #>().GetMapper().MapTo(l)).ToList();
+                <#}}
+				#>DoMapping(entity, dto);
+			    return entity;
+			 }
+			 
+			 partial void DoMapping(<#= SafeName(type.Name) #> fromEntity, <#= GetDTOClassName(type.Name) #> toDto);
+			 partial void DoMapping(<#= GetDTOClassName(type.Name) #> fromDto, <#= SafeName(type.Name) #> toEntity);
+		}
+    }       
+    <#
+}
+#>    
+}
+<# Cleanup(); #>
+<#+// 
+string outputDir;
+
+private string GetDataContractNamespace(string entitiesNamespace)
+{
+    return string.Format("urn:{0}", entitiesNamespace.Replace(".", "/"));
+}
+
+private string GetDTOClassName(string typeName)
+{
+    return typeName + "DTO";
+}
+
+private bool IsDTO(IEnumerable<Type> exportedTypes, Type type)
+{
+    return exportedTypes.Any(e => e.FullName == type.FullName);
+}
+
+private bool ExportProperty(PropertyInfo p)
+{
+    return true;
+}
+
+private string GetPropertyType(PropertyInfo property)
+{
+    return GetDisplayName(property.PropertyType);
+}
+
+private string GetDisplayName(Type t)
+{
+    if(t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable))
+        return string.Format("{0}?", GetDisplayName(t.GetGenericArguments()[0]));
+    if(t.IsGenericType)
+        return string.Format("{0}<{1}>",
+            t.Name.Remove(t.Name.IndexOf('`')), 
+            string.Join(",",t.GetGenericArguments().Select(at => GetDisplayName(at))));
+    if(t.IsArray)
+        return string.Format("{0}[{1}]", 
+            GetDisplayName(t.GetElementType()),
+            new string(',', t.GetArrayRank()-1));
+    return SafeName(t.Name);
+}
+
+private string SafeName(string name)
+{
+	string[] reservedWords = {
+		"abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char", "checked", "class", "const", "continue", "decimal", "default", "delegate", "do", "double",
+		"else", "enum", "event", "explicit", "extern", "false", "finally", "fixed", "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface", "internal",
+		"is", "lock", "long", "namespace", "new", "null", "object", "operator", "out", "override", "params", "private", "protected", "public", "readonly", "ref", "return",
+		"sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct", "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked",
+		"unsafe", "ushort", "using", "virtual", "void", "volatile", "while"
+	};
+	if (reservedWords.Contains(name))
+		return "@" + name;
+    return name;
+}
+
+private string ConvertToCamelCase(string name)
+{
+    return name.Substring(0, 1).ToLower() + name.Substring(1);
+}
+
+private void GenerateUsings(IEnumerable<Type> services)
+{
+	// Generate nice code with short type names, by adding the 
+	// appropriate using statements as necessary for 
+	// service types and constructor parameters.
+	var namespaces = from t in services
+					let c = t.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+										 .OrderByDescending(c => c.GetParameters().Length).FirstOrDefault()
+					where c != null
+					from p in c.GetParameters()
+					select p.ParameterType.Namespace;
+
+   // Add services namespaces too.
+   namespaces = namespaces.Concat(services.Select(s => s.Namespace));
+
+   // As well as the interfaces if any
+   namespaces = namespaces.Concat(from s in services
+								  from t in s.GetInterfaces()
+								  select t.Namespace);
+
+   foreach (var ns in namespaces.Distinct().OrderBy(s => s))
+   {
+	   WriteLine("using " + ns + ";");
+   }
+}
+
+private Assembly LoadProjectAssembly(string assemblyFile)
+{
+	if (!Path.IsPathRooted(assemblyFile))
+	   assemblyFile = Path.Combine(Path.GetDirectoryName(this.Host.TemplateFile), assemblyFile);
+
+   outputDir = Path.GetDirectoryName(assemblyFile);
+
+   if (!File.Exists(assemblyFile))
+	   throw new ArgumentException(String.Format("Project assembly file could not be located at {0}.", assemblyFile));
+
+   AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+
+   return Assembly.Load(File.ReadAllBytes(assemblyFile));
+}
+
+private void Cleanup()
+{
+	AppDomain.CurrentDomain.AssemblyResolve -= ResolveAssembly;
+}
+
+private Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+{
+	var dependency = Path.Combine(outputDir, args.Name.Substring(0, args.Name.IndexOf(',')) + ".dll");
+
+	if (File.Exists(dependency))
+	   return Assembly.Load(File.ReadAllBytes(dependency));
+
+	return null;
+}
+
+//List<PropertyInfo> excludedProperties = new List<PropertyInfo>();
+//private void ExcludeProperty<TEntity>(Expression<Func<TEntity, object>> propertyExpression)
+//{
+//    excludedProperties.Add((PropertyInfo)((MemberExpression)propertyExpression.Body).Member);
+//}
+#>
