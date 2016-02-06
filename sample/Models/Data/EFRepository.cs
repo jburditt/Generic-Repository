@@ -12,13 +12,13 @@ namespace Sample.Models.Data
     /// Repository provider for Entity Framework
     /// See IRepository for method descriptions
     /// </summary>
-    public class EFRepository : IRepository
+    public class EFRepository : IDisposable//IRepository
     {
-        public readonly WBSContext dbContext;
+        public readonly SampleDatabaseEntities dbContext;
 
         public EFRepository()
         {
-            dbContext = new WBSContext();
+            dbContext = new SampleDatabaseEntities();
             //SERIALIZE WILL FAIL WITH PROXIED ENTITIES
             dbContext.Configuration.ProxyCreationEnabled = false;
             //ENABLING COULD CAUSE ENDLESS LOOPS AND PERFORMANCE PROBLEMS
@@ -156,7 +156,7 @@ namespace Sample.Models.Data
 
         public bool Contains<T>(Expression<Func<T, bool>> predicate) where T : class
         {
-            return dbContext.Set<T>().Count<T>(predicate) > 0;
+            return dbContext.Set<T>().Count(predicate) > 0;
         }
 
         public virtual IQueryable<T> SelectQuery<T>(string query, params object[] parameters) where T : class
@@ -164,7 +164,7 @@ namespace Sample.Models.Data
             return dbContext.Set<T>().SqlQuery(query, parameters).AsQueryable();
         }
 
-        public virtual void ExecuteCommand(String procedureCommand, params SqlParameter[] sqlParams)
+        public virtual void ExecuteCommand(string procedureCommand, params SqlParameter[] sqlParams)
         {
             dbContext.Database.ExecuteSqlCommand(procedureCommand, sqlParams);
         }
@@ -176,8 +176,7 @@ namespace Sample.Models.Data
 
         public void Dispose()
         {
-            if (dbContext != null)
-                dbContext.Dispose();
+            dbContext?.Dispose();
         }
     }
 }

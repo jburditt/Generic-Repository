@@ -38,12 +38,15 @@ namespace Sample.DAL
             }
         }
 
-        public static IEnumerable<TDTO> Get(Expression<Func<T, bool>> filter = null, params Expression<Func<T, object>>[] includeProperties)
+        public static IEnumerable<TDTO> Get(Expression<Func<T, bool>> filter = null,
+            params Expression<Func<T, object>>[] includeProperties)
         {
             return Get(filter, null, includeProperties);
         }
 
-        public static IEnumerable<TDTO> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, params Expression<Func<T, object>>[] includeProperties)
+        public static IEnumerable<TDTO> Get(Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            params Expression<Func<T, object>>[] includeProperties)
         {
             using (var repo = new EFRepository())
             {
@@ -117,4 +120,5 @@ namespace Sample.DAL
         {
             return new TDTO().MapTo(item);
         }
+    }
 }

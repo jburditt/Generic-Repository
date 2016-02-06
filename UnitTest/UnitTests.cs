@@ -26,7 +26,7 @@ namespace UnitTest
             //using (var uow = new DapperUnitOfWork())
             //{
                 var id = AddressBLL.Insert(new AddressDTO { AddressLine1 = "117 27th Street E", AddressLine2 = "#3", City = "North Vancouver", PostalCode = "V7N1B3" }).Id;
-                var address = AddressBLL.Find(new { Id = id });
+                var address = AddressBLL.Find(p => p.Id == id);
                 Assert.AreEqual("117 27th Street E", address.AddressLine1);
                 AddressBLL.Delete(id);
             //}

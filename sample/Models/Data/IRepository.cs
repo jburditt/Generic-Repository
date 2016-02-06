@@ -12,7 +12,7 @@ namespace Sample.DAL
         /// Gets all objects from database
         /// </summary>
         /// <returns></returns>
-        IQueryable<T> All<T>(string[] includes = null) where T : class, new();
+        IQueryable<T> All<T>(params Expression<Func<T, object>>[] includes) where T : class, new();
 
         /// <summary>
         /// Select Single Item by specified expression.

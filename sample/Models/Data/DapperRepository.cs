@@ -19,7 +19,7 @@ namespace Sample.Models.Data
     /// Repository provider for Dapper
     /// See base class for method comments
     /// </summary>
-    public class DapperRepository : IRepository
+    public class DapperRepository //: IRepository
     {
         private IDbConnection dbContext;
 
