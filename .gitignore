@@ -7,6 +7,10 @@ Desktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+UnitTest/bin/Debug/
+UnitTest/obj/Debug/
+sample/obj/Debug/
+sample/bin/
 
 # Windows Installer files
 *.cab
@@ -46,3 +50,4 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .vs/config/applicationhost.config
+*.suo

@@ -17,6 +17,7 @@ TODO:
 - Add unit testing that demonstrates the sample project
 - Add unit of work pattern to replace 'per method call' scope of context. Context scope should be 'per request'.
 - Add dependency injection and add another ORM e.g. ORMLiteRepository
+- EntityFramework depencies in separate project / assembly, Dapper, ORMLite
 - Evaluate scenario: Find one object that needs to be joined with another object
   e.g. SELECT u.* FROM User u JOIN Company c ON c.id = u.company_id WHERE c.company_name = @name AND u.status > 0
 

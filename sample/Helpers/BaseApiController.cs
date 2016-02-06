@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-//using System.Data.Entity.Core;
+using System.Data.Entity.Core;
 using System.Linq;
 using System.Web.Http;
 using Sample.Models.Data;
 using Sample.Models.Interfaces;
 using System.Data;
-using System;
-using System.Data.Entity.Core;
 
 namespace Sample.DAL
 {
@@ -36,7 +34,7 @@ namespace Sample.DAL
             //return DataStore.Find<T>(t => t.Id == id, Includes);
             using (var context = new EFRepository())
             {
-                context.dbContext.Database.Connection.Open();
+                //context.dbContext.Database.Connection.Open();
                 return context.Find<T>(t => t.Id == id);
             }
         }

@@ -2,9 +2,9 @@
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
-using WBS.Models.Interfaces;
+using Sample.Models.Interfaces;
 
-namespace WBS.DAL
+namespace Sample.DAL
 {
     public interface IRepository : IDisposable
     {

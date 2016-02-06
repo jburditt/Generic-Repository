@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WBS.Models.Interfaces
+namespace Sample.Models.Interfaces
 {
     public interface IModifiedOn
     {

@@ -22,6 +22,21 @@ namespace Sample.DAL
             }
         }
 
+        public static IEnumerable<TDTO> Insert(IEnumerable<TDTO> n)
+        {
+            using (var repo = new EFRepository())
+            {
+                List<TDTO> retval = new List<TDTO>();
+                foreach (var m in n)
+                {
+                    var tdto = Map(m);
+                    repo.Create(tdto);
+                    retval.Add(Map(tdto));
+                }
+                return retval;
+            }
+        }
+
         public static TDTO Find(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
             using (var repo = new EFRepository())

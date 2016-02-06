@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sample.BLL;
 using Sample.Models.Data.DTO;
-using Sample.Models.Data;
 using System.IO;
 using System.Collections.Generic;
 
@@ -42,6 +41,31 @@ namespace UnitTest
                 count++;
             }
             Assert.IsTrue(count > 0);
+        }
+
+        [TestMethod]
+        public void Test_ComplexQuery()
+        {
+            DeleteAll();
+        }
+
+        // TODO Replace LocalDB with Mocked Database
+
+        private void DeleteAll()
+        {
+            //AddressBLL.DeleteAll();
+        }
+
+        private void PopulateData()
+        {
+            List<AddressDTO> Addresses = new List<AddressDTO>();
+            Addresses.Add(new AddressDTO { AddressLine1 = "117 27th Street E", AddressLine2 = "#3", City = "North Vancouver", PostalCode = "V7N1B3" });
+            Addresses.Add(new AddressDTO { AddressLine1 = "125 21th Avenue E", AddressLine2 = "", City = "Burnaby", PostalCode = "V0N1C3" });
+            Addresses.Add(new AddressDTO { AddressLine1 = "11 27th Street W", AddressLine2 = "", City = "Vancouver", PostalCode = "V1N1C3" });
+            AddressBLL.Insert(Addresses);
+
+            //List<UserDTO> Users = new List<UserDTO>();
+
         }
     }
 }
