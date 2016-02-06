@@ -3,10 +3,10 @@ using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
-using WBS.DAL;
-using WBS.Models.Interfaces;
+using Sample.DAL;
+using Sample.Models.Interfaces;
 
-namespace WBS.Models.Data
+namespace Sample.Models.Data
 {
     /// <summary>
     /// Repository provider for Entity Framework
@@ -14,11 +14,11 @@ namespace WBS.Models.Data
     /// </summary>
     public class EFRepository : IRepository
     {
-        private readonly WBSContext dbContext;
+        private readonly SampleContext dbContext;
 
         public EFRepository()
         {
-            dbContext = new WBSContext();
+            dbContext = new SampleContext();
             //SERIALIZE WILL FAIL WITH PROXIED ENTITIES
             dbContext.Configuration.ProxyCreationEnabled = false;
             //ENABLING COULD CAUSE ENDLESS LOOPS AND PERFORMANCE PROBLEMS

@@ -11,6 +11,8 @@ UnitTest/bin/Debug/
 UnitTest/obj/Debug/
 sample/obj/Debug/
 sample/bin/
+src/obj/Debug/
+src/bin/Debug/
 
 # Windows Installer files
 *.cab

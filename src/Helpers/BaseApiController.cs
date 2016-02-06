@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Data.Entity.Core;
 using System.Linq;
 using System.Web.Http;
-using WBS.Models.Data;
-using WBS.Models.Interfaces;
+using Sample.Models.Data;
+using Sample.Models.Interfaces;
 
-namespace WBS.DAL
+namespace Sample.DAL
 {
     public class BaseApiController<T> : ApiController where T : class, IIdentifier
     {

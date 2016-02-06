@@ -44,23 +44,7 @@
     <Compile Include="Helpers\BaseController.cs" />
     <Compile Include="Models\Data\EFRepository.cs" />
     <Compile Include="Models\Data\IRepository.cs" />
-    <Compile Include="Models\Data\WBS.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>WBS.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Data\WBS.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>WBS.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\DTO\DtoMapper.core.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\DTO\DtoMapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\DTO\DtoMapper.manual.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\DTO\DtoMapper1.cs">
@@ -74,14 +58,6 @@
     <Compile Include="Models\Interfaces\IModifiedOn.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Models\Data\WBS.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>WBS.Context.cs</LastGenOutput>
-    </None>
-    <None Include="Models\Data\WBS.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>WBS.cs</LastGenOutput>
-    </None>
     <None Include="Models\DTO\DtoMapper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DtoMapper1.cs</LastGenOutput>
