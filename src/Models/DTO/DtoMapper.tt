@@ -1,21 +1,19 @@
 <#@ template language="C#" debug="true" hostspecific="true"#>
 <#@ Output Extension=".cs"  #>
 <#@ Assembly Name="System.Core.dll" #>
-<#@ Assembly Name="$(ProjectDir)bin\WBS.dll" #>
+<#@ Assembly Name="$(ProjectDir)bin\Sample.dll" #>
 <#@ Import Namespace="System.Collections.Generic" #>
 <#@ Import Namespace="System.Reflection" #>
 <#@ Import Namespace="System.IO" #>
 <#@ Import Namespace="System.Linq" #>
 <#@ Import Namespace="System.Linq.Expressions" #>
-<#@ import namespace="WBS.Models" #>
+<#@ import namespace="Sample.Models" #>
 <#
-var entitiesNamespace = "WBS.Models.Data";
-var entitiesAssembly = @"..\..\bin\WBS.dll";
+var entitiesNamespace = "Sample.Models.Data";
+var entitiesAssembly = @"..\..\bin\Sample.dll";
 // add objects you do not want DTO created for
 var excludeList = new string[] { 
 	//"address.companies", "address.users",
-	//"auditor_case_type"
-	//"company.users", "company.cases", "company.incidents", "company.cases"
 };
 // if enabled all plural dtos will be excluded e.g. address.companies
 var disableCollectionDTO = true;
