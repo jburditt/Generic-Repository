@@ -4,7 +4,7 @@ using Sample.Models.Data.DTO;
 
 namespace Sample.BLL
 {
-    public class AddressBLL : BaseController<Address, AddressDTO>
+    public class UserDepartmentBLL : BaseController<UserDepartment, UserDepartmentDTO>
     {
     }
 }

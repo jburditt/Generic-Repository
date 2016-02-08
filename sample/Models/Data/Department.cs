@@ -12,21 +12,18 @@ namespace Sample.Models.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Address
+    public partial class Department
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Address()
+        public Department()
         {
-            this.Users = new HashSet<User>();
+            this.UserDepartments = new HashSet<UserDepartment>();
         }
     
         public int Id { get; set; }
-        public string AddressLine1 { get; set; }
-        public string AddressLine2 { get; set; }
-        public string City { get; set; }
-        public string PostalCode { get; set; }
+        public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<UserDepartment> UserDepartments { get; set; }
     }
 }

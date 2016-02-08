@@ -62,8 +62,9 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MicroOrm.Pocos.SqlGenerator">
+    <Reference Include="MicroOrm.Pocos.SqlGenerator, Version=1.0.0.2, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MicroOrm.Pocos.SqlGenerator.1.0.0.2\lib\net45\MicroOrm.Pocos.SqlGenerator.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Data.Edm, Version=5.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -201,7 +202,10 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AddressBLL.cs" />
+    <Compile Include="Controllers\DepartmentBLL.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\UserBLL.cs" />
+    <Compile Include="Controllers\UserDepartmentBLL.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -209,6 +213,10 @@
     <Compile Include="Helpers\BaseApiController.cs" />
     <Compile Include="Helpers\BaseController.cs" />
     <Compile Include="Models\Data\Address.cs">
+      <DependentUpon>Sample.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Data\DapperRepository.cs" />
+    <Compile Include="Models\Data\Department.cs">
       <DependentUpon>Sample.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Data\EFRepository.cs" />
@@ -231,12 +239,20 @@
     <Compile Include="Models\Data\User.cs">
       <DependentUpon>Sample.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\DTO\addressDTO.cs" />
+    <Compile Include="Models\Data\UserDepartment.cs">
+      <DependentUpon>Sample.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DTO\DtoMapper.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DtoMapper.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Interfaces\ICreatedOn.cs" />
     <Compile Include="Models\Interfaces\IDTO.cs" />
     <Compile Include="Models\Interfaces\IIdentifier.cs" />
     <Compile Include="Models\Interfaces\IModifiedOn.cs" />
     <Compile Include="Models\Partials\Address.partial.cs" />
+    <Compile Include="Models\Partials\User.partial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -247,23 +263,6 @@
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <EntityDeploy Include="Models\Data\Sample.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Sample.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\Data\Sample.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Sample.edmx</DependentUpon>
-      <LastGenOutput>Sample.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\Data\Sample.edmx.diagram">
-      <DependentUpon>Sample.edmx</DependentUpon>
-    </Content>
-    <Content Include="Models\Data\Sample.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Sample.edmx</DependentUpon>
-      <LastGenOutput>Sample.cs</LastGenOutput>
-    </Content>
     <Content Include="Areas\HelpPage\Views\Web.config" />
     <Content Include="Areas\HelpPage\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\ResourceModel.cshtml" />
@@ -283,8 +282,20 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <None Include="Scripts\jquery-1.8.2.intellisense.js" />
-    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Models\Data\Sample.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Sample.edmx</DependentUpon>
+      <LastGenOutput>Sample.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Data\Sample.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Sample.edmx</DependentUpon>
+      <LastGenOutput>Sample.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\DTO\DtoMapper.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DtoMapper.cs</LastGenOutput>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -294,20 +305,6 @@
     </Content>
     <Content Include="Areas\HelpPage\Views\_ViewStart.cshtml" />
     <Content Include="Content\Site.css" />
-    <Content Include="Images\accent.png" />
-    <Content Include="Images\bullet.png" />
-    <Content Include="Images\heroAccent.png" />
-    <Content Include="Images\orderedList0.png" />
-    <Content Include="Images\orderedList1.png" />
-    <Content Include="Images\orderedList2.png" />
-    <Content Include="Images\orderedList3.png" />
-    <Content Include="Images\orderedList4.png" />
-    <Content Include="Images\orderedList5.png" />
-    <Content Include="Images\orderedList6.png" />
-    <Content Include="Images\orderedList7.png" />
-    <Content Include="Images\orderedList8.png" />
-    <Content Include="Images\orderedList9.png" />
-    <Content Include="Scripts\_references.js" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -319,6 +316,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="Models\Data\Sample.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Sample.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Models\Data\Sample.edmx.diagram">
+      <DependentUpon>Sample.edmx</DependentUpon>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

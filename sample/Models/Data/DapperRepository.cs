@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Dapper;
 using MicroOrm.Pocos.SqlGenerator;
+using System.Collections.Generic;
 
 namespace Sample.Models.Data
 {
@@ -19,9 +20,9 @@ namespace Sample.Models.Data
     /// Repository provider for Dapper
     /// See base class for method comments
     /// </summary>
-    public class DapperRepository //: IRepository
+    public class DapperRepository : IDisposable//IRepository
     {
-        private IDbConnection dbContext;
+        internal IDbConnection dbContext;
 
         public DapperRepository()
         {
@@ -111,11 +112,6 @@ namespace Sample.Models.Data
             return TObject;
         }
 
-        public virtual int Delete<T>(T TObject) where T : class
-        {
-            throw new NotImplementedException();
-        }
-
         public virtual int Update<T>(T TObject) where T : class, new()
         {
             throw new NotImplementedException();
@@ -127,6 +123,11 @@ namespace Sample.Models.Data
         }
 
         public virtual T Update<T>(Expression<Func<T, bool>> predicate, params Func<T, object>[] properties) where T : class, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual int Delete<T>(T TObject) where T : class
         {
             throw new NotImplementedException();
         }
@@ -160,5 +161,42 @@ namespace Sample.Models.Data
                 dbContext.Execute(procedureCommand, sqlParams, transaction);
             }
         }
+
+        public void Dispose()
+        {
+            dbContext?.Dispose();
+        }
+
+        #region Dapper specific
+
+        /*public static IEnumerable<TParent> QueryParentChild<TParent, TChild, TParentKey>(
+            this IDbConnection connection,
+            string sql,
+            Func<TParent, TParentKey> parentKeySelector,
+            Func<TParent, IList<TChild>> childSelector,
+            dynamic param = null, IDbTransaction transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null)
+        {
+            Dictionary<TParentKey, TParent> cache = new Dictionary<TParentKey, TParent>();
+
+            connection.Query<TParent, TChild, TParent>(
+                sql,
+                (parent, child) =>
+                {
+                    if (!cache.ContainsKey(parentKeySelector(parent)))
+                    {
+                        cache.Add(parentKeySelector(parent), parent);
+                    }
+
+                    TParent cachedParent = cache[parentKeySelector(parent)];
+                    IList<TChild> children = childSelector(cachedParent);
+                    children.Add(child);
+                    return cachedParent;
+                },
+                param as object, transaction, buffered, splitOn, commandTimeout, commandType);
+
+            return cache.Values;
+        }*/
+
+        #endregion Dapper specific
     }
 }

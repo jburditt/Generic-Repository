@@ -118,7 +118,15 @@ namespace Sample.DAL
             }
         }
 
-        private static IEnumerable<TDTO> Map(IEnumerable<T> collection)
+        internal static IQueryable<TDTO> Map(IQueryable<T> collection)
+        {
+            var retval = new Collection<TDTO>();
+            foreach (var item in collection)
+                retval.Add(new TDTO().MapFrom(item));
+            return retval.AsQueryable();
+        }
+
+        internal static IEnumerable<TDTO> Map(IEnumerable<T> collection)
         {
             var retval = new Collection<TDTO>();
             foreach (var item in collection)
@@ -126,12 +134,12 @@ namespace Sample.DAL
             return retval;
         }
 
-        private static TDTO Map(T item)
+        internal static TDTO Map(T item)
         {
             return new TDTO().MapFrom(item);
         }
 
-        private static T Map(TDTO item)
+        internal static T Map(TDTO item)
         {
             return new TDTO().MapTo(item);
         }

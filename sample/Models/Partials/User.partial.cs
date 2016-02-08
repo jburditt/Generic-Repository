@@ -2,7 +2,7 @@
 
 namespace Sample.Models.Data
 {
-    public partial class Address : IIdentifier
+    public partial class User : IIdentifier
     {
     }
 }

@@ -14,11 +14,11 @@ namespace Sample.Models.Data
     /// </summary>
     public class EFRepository : IDisposable//IRepository
     {
-        public readonly SampleDatabaseEntities dbContext;
+        internal readonly Entities dbContext;
 
         public EFRepository()
         {
-            dbContext = new SampleDatabaseEntities();
+            dbContext = new Entities();
             //SERIALIZE WILL FAIL WITH PROXIED ENTITIES
             dbContext.Configuration.ProxyCreationEnabled = false;
             //ENABLING COULD CAUSE ENDLESS LOOPS AND PERFORMANCE PROBLEMS

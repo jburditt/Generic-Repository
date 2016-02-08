@@ -7,7 +7,7 @@
 <#@ Import Namespace="System.IO" #>
 <#@ Import Namespace="System.Linq" #>
 <#@ Import Namespace="System.Linq.Expressions" #>
-<#@ import namespace="WBS.Models" #>
+<#@ import namespace="Sample.Models" #>
 <#
 var entitiesNamespace = "Sample.Models.Data";
 var entitiesAssembly = @"..\..\bin\Sample.dll";
@@ -29,7 +29,7 @@ Func<PropertyInfo, bool> collectionProperties = p => !scalarProperties.Invoke(p)
 //Use another expression here to filter the entities
 var typesToRegister = from t in LoadProjectAssembly(entitiesAssembly).GetExportedTypes()
                       where t.Namespace == entitiesNamespace && t.IsClass && !t.IsAbstract && 
-                        !(t.Name == "EFRepository" || t.Name == "WBSEntities")
+                        !(t.Name == "EFRepository" || t.Name == "Entities")
 					  select t;
 
 GenerateUsings(typesToRegister);#>
