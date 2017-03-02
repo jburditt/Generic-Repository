@@ -13,6 +13,7 @@ REFERENCES:
 
 TODO:
 
+- Add MockRepository
 - Add a working sample project that runs out of the box
 - Add unit testing that demonstrates the sample project
 - Add unit of work pattern to replace 'per method call' scope of context. Context scope should be 'per request'.
