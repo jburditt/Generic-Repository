@@ -1,4 +1,6 @@
 # Generic-Repository
+See [GamifyWorkout Repository](https://github.com/jburditt/GamifyWorkout/blob/main/api/Database/Services/EfRepository.cs) for an updated EfRepository with more methods
+
 Generic Repository EF and Web API
 
 I did not write the majority of the code, I simple took 3 existing tools and smashed them together and over time I have learned a lot and work towards a more elegant solution. I have added bug fixes, merged Web API and EF to work from one repository, DTO automation and other various changes.
